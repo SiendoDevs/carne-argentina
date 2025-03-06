@@ -73,7 +73,7 @@ export async function GET(request: Request) {
     }
 
     // Agregar datos históricos para posible uso en gráficos
-    const datosHistoricos = fechas.map((fecha: any, index: string | number) => ({
+    const datosHistoricos = fechas.map((fecha: string, index: number) => ({  // Changed from 'any' to specific types
       fecha: fecha,
       precio: precios[index] || null,
       cabezas: cabezas[index] || null,
@@ -92,12 +92,11 @@ export async function GET(request: Request) {
         inicio: fechaInicioStr,
         fin: fechaFinStr
       }
-    });
-  } catch (error) {
-    console.error("Error al obtener datos:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Error desconocido" },
-      { status: 500 }
-    );
+    });  // Change from 'any' to 'unknown'
+  } catch (error: unknown) {  // Change from 'any' to 'unknown'
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: 'An unknown error occurred' }, { status: 500 });
   }
 }

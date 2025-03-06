@@ -16,6 +16,7 @@ interface DataItem {
   cabezas: number;
   fecha: string;
   penultimaFecha: string | null;
+  penultimasCabezas: number | null;  // Add this line
 }
 
 export default function Home() {
@@ -41,13 +42,18 @@ export default function Home() {
           variacionPorcentual: result.variacionPorcentual,
           cabezas: result.cabezas, 
           fecha: result.fecha,
-          penultimaFecha: result.penultimaFecha
+          penultimaFecha: result.penultimaFecha,
+          penultimasCabezas: result.penultimasCabezas
         }]);
       } else {
         setData(result);
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {  // Changed from 'any' to 'unknown'
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     } finally {
       setLoading(false);
     }

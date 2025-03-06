@@ -5,9 +5,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 interface VolumeCardProps {
   categoria: string;
   cabezas: number;
-  penultimasCabezas?: number | null;
+  penultimasCabezas: number | null;  // Remove optional marker (?)
   fecha: string;
-  penultimaFecha?: string | null;
+  penultimaFecha: string | null;
 }
 
 const VolumeCard: React.FC<VolumeCardProps> = ({
@@ -30,7 +30,8 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
   if (
     penultimasCabezas !== null &&
     penultimasCabezas !== undefined &&
-    penultimasCabezas !== 0
+    penultimasCabezas !== 0 &&
+    cabezas !== null
   ) {
     variacionPorcentualCabezas =
       ((cabezas - penultimasCabezas) / penultimasCabezas) * 100;
@@ -48,7 +49,7 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
           <Users className="h-5 w-5 mr-2 text-purple-500" />
-          Volumen Operado
+          {categoria} - Volumen Operado
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center pt-4">
@@ -57,7 +58,7 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
           {cabezas.toLocaleString("es-AR")}
         </div>
 
-        {hayVariacion && variacionPorcentualCabezas !== null && (
+        {hayVariacion && (
           <div
             className={`flex items-center justify-center mb-2 ${
               esVariacionPositiva
@@ -72,10 +73,11 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
             ) : esVariacionNegativa ? (
               <TrendingDown className="h-4 w-4 mr-1" />
             ) : (
-              <span className="h-4 w-4 mr-1">-</span> // Mostramos un guion si la variación es 0%
+              <span className="h-4 w-4 mr-1">-</span>
             )}
             <span className="font-medium">
-              {variacionPorcentualCabezas.toFixed(2)}%
+              {Math.abs(variacionPorcentualCabezas!).toFixed(2)}%
+              {esVariacionPositiva ? " ▲" : esVariacionNegativa ? " ▼" : ""}
             </span>
           </div>
         )}
