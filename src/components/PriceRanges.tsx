@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Calculator } from "lucide-react";
 
 interface PriceRangesProps {
@@ -8,15 +9,19 @@ interface PriceRangesProps {
 }
 
 const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
+  const [isPrecioMaximo, setIsPrecioMaximo] = useState(false);
+  
   // Constants for calculations
-  const RINDE_FAENA = 0.58; // 58% yield after slaughter
-  const IVA_RATE = 0.105; // 10.5% IVA
-  const OTROS_IMPUESTOS = 0.06; // 6% other taxes
+  const RINDE_FAENA = 0.58;
+  const IVA_RATE = 0.105;
+  const OTROS_IMPUESTOS = 0.05;
+  const INCREMENTO_MAXIMO = 0.06; // 10% increment for maximum price
 
-  // Calculations
-  const ivaAmount = precio * IVA_RATE;
-  const otrosImpuestosAmount = precio * OTROS_IMPUESTOS;
-  const precioConImpuestos = precio + ivaAmount + otrosImpuestosAmount;
+  // Base price calculation
+  const precioBase = isPrecioMaximo ? precio * (1 + INCREMENTO_MAXIMO) : precio;
+  const ivaAmount = precioBase * IVA_RATE;
+  const otrosImpuestosAmount = precioBase * OTROS_IMPUESTOS;
+  const precioConImpuestos = precioBase + ivaAmount + otrosImpuestosAmount;
   const precioFinal = precioConImpuestos / RINDE_FAENA;
 
   return (
@@ -28,16 +33,32 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
             Estimación de Precio Final
           </div>
           <span className="text-sm text-gray-600 mt-1 font-light">
-            En base al promedio de {categoria}
+            En base al {isPrecioMaximo ? 'máximo' : 'promedio'} de {categoria}
           </span>
         </CardTitle>
+        <div className="flex gap-2 mt-2">
+          <Button
+            onClick={() => setIsPrecioMaximo(false)}
+            variant={!isPrecioMaximo ? "default" : "outline"}
+            size="sm"
+          >
+            Precio Promedio
+          </Button>
+          <Button
+            onClick={() => setIsPrecioMaximo(true)}
+            variant={isPrecioMaximo ? "default" : "outline"}
+            size="sm"
+          >
+            Mayor Calidad
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="pt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
             <div className="text-sm">
               <p className="text-gray-600">Precio en Pie:</p>
-              <p className="font-medium">${precio.toLocaleString('es-AR')}/kg</p>
+              <p className="font-medium">${precioBase.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg</p>
             </div>
             <div className="text-sm">
               <p className="text-gray-600">IVA (10.5%):</p>
@@ -56,15 +77,20 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
           </div>
         </div>
         <div className="mt-4 pt-4 border-t">
-          <p className="text-lg font-semibold text-blue-600">
-            Precio Final Estimado: ${precioFinal.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg
-          </p>
-          <div className="mt-2 text-sm text-gray-600">
-            <p>Rendimiento aproximado en gancho: 58%</p>
-            <p>1kg en pie ≈ {(1/RINDE_FAENA).toFixed(2)}kg de carne</p>
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+            <div className="text-center">
+              <p className="text-gray-600 text-sm mb-1">Precio Final Estimado</p>
+              <p className="text-3xl font-bold text-blue-600 mb-2">
+                ${precioFinal.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                <span className="text-lg font-normal text-blue-400">/kg</span>
+              </p>
+              <div className="inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full text-sm text-blue-700">
+                <span>Rendimiento al gancho: 58%</span>
+              </div>
+            </div>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            *Estos valores son estimativos y pueden variar según costos logísticos, distribución y márgenes comerciales.
+          <p className="text-xs text-gray-500 mt-3 text-center">
+            *Todos los valores son estimativos y pueden variar según costos logísticos, distribución y márgenes comerciales.
           </p>
         </div>
       </CardContent>

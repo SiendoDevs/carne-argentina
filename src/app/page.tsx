@@ -7,6 +7,7 @@ import VolumeCard from "@/components/VolumeCard";
 import DateCard from "@/components/DateCard";
 import SummaryCard from "@/components/SummaryCard";
 import PriceRanges from "@/components/PriceRanges";
+import Footer from "@/components/Footer";
 
 interface DataItem {
   categoria: string;
@@ -69,7 +70,8 @@ export default function Home() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-8 text-center">Trazabilidad de Precios de la Carne Argentina</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Carne Argentina</h1>
+      <h2 className="mb-4 font-light text-center">Trazabilidad de precios, volumen y variaciónes del mercado de carne vacuna de Buenos Aires</h2>
       <CategoryTabs activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
       {loading && (
         <div className="text-center py-8">
@@ -101,6 +103,7 @@ export default function Home() {
           <div className="text-center text-gray-500">No hay datos disponibles para esta categoría.</div>
         )
       )}
+      <Footer />
     </div>
   );
 }

@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Hacienda App - Dashboard de Precios',
-  description: 'Visualización de datos del Mercado Agroganadero',
+  title: 'Precios de la Carne Argentina',
+  description: 'Mercado Agroganadero de Buenos Aires',
 };
 
 export default function RootLayout({
