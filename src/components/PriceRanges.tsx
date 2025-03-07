@@ -57,8 +57,12 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
         </div>
         <div className="mt-4 pt-4 border-t">
           <p className="text-lg font-semibold text-blue-600">
-            Precio Final Estimado (post faena): ${precioFinal.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg
+            Precio Final Estimado: ${precioFinal.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg
           </p>
+          <div className="mt-2 text-sm text-gray-600">
+            <p>Rendimiento aproximado en gancho: 58%</p>
+            <p>1kg en pie ≈ {(1/RINDE_FAENA).toFixed(2)}kg de carne</p>
+          </div>
           <p className="text-xs text-gray-500 mt-2">
             *Estos valores son estimativos y pueden variar según costos logísticos, distribución y márgenes comerciales.
           </p>
