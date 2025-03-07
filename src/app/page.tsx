@@ -90,7 +90,10 @@ export default function Home() {
            <SummaryCard {...lastCategoryData} />
          </div>
          <div className="mt-6">
-           <PriceRanges />
+           <PriceRanges 
+             categoria={lastCategoryData.categoria}
+             precio={lastCategoryData.precio}
+           />
          </div>
        </>
       ) : (
