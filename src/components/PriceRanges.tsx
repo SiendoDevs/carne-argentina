@@ -67,7 +67,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
           </div>
           <div className="space-y-3">
             <div className="text-sm">
-              <p className="text-gray-600">Otros Impuestos (6%):</p>
+              <p className="text-gray-600">Otros Impuestos (5%):</p>
               <p className="font-medium">+${otrosImpuestosAmount.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg</p>
             </div>
             <div className="text-sm">
