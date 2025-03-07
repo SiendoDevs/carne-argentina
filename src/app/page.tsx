@@ -9,7 +9,7 @@ import SummaryCard from "@/components/SummaryCard";
 import PriceRanges from "@/components/PriceRanges";
 import Footer from "@/components/Footer";
 import SupportLocal from "@/components/SupportLocal";
-// @ts-ignore
+// @ts-expect-error - react-world-flags lacks TypeScript definitions
 import Flag from 'react-world-flags';
 
 interface DataItem {
