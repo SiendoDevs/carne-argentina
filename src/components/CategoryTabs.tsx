@@ -41,15 +41,15 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+      <div className="mb-6 w-full overflow-x-auto">
+        <div className="flex flex-nowrap md:flex-wrap gap-2 md:gap-4 justify-start md:justify-center min-w-full px-4 md:px-0">
           {categories.map((category) => (
             <Tooltip key={category.id}>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => setActiveCategory(category.id)}
                   className={`
-                    flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200
+                    whitespace-nowrap flex items-center px-3 gap-2 py-2 rounded-lg transition-all duration-200
                     hover:bg-blue-50 relative
                     ${activeCategory === category.id
                       ? "bg-blue-100 text-blue-700 shadow-sm"

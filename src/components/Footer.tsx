@@ -14,7 +14,7 @@ const Footer = () => {
           rel="noopener noreferrer"
           className="text-blue-500 hover:text-blue-600"
         >
-          Catriel Sánchez
+          Siendo Studio®
         </a>
       </p>
       <p className="mt-1">

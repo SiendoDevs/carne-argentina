@@ -14,8 +14,8 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
   // Constants for calculations
   const RINDE_FAENA = 0.58;
   const IVA_RATE = 0.105;
-  const OTROS_IMPUESTOS = 0.05;
-  const INCREMENTO_MAXIMO = 0.06; // 10% increment for maximum price
+  const OTROS_IMPUESTOS = 0.07
+  const INCREMENTO_MAXIMO = 0.065; 
 
   // Base price calculation
   const precioBase = isPrecioMaximo ? precio * (1 + INCREMENTO_MAXIMO) : precio;
@@ -30,10 +30,10 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
         <CardTitle className="text-lg flex flex-col">
           <div className="flex items-center">
             <Calculator className="h-5 w-5 mr-2 text-blue-500" />
-            Estimación de Precio Final
+            Estimación de Precio Final para Carnicerías
           </div>
           <span className="text-sm text-gray-600 mt-1 font-light">
-            En base al {isPrecioMaximo ? 'máximo' : 'promedio'} de {categoria}
+            En base al {isPrecioMaximo ? 'máximo' : 'promedio'} en la categoria {categoria}
           </span>
         </CardTitle>
         <div className="flex gap-2 mt-2">
@@ -49,7 +49,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
             variant={isPrecioMaximo ? "default" : "outline"}
             size="sm"
           >
-            Mayor Calidad
+            Calidad Superior ($)
           </Button>
         </div>
       </CardHeader>
@@ -67,7 +67,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
           </div>
           <div className="space-y-3">
             <div className="text-sm">
-              <p className="text-gray-600">Otros Impuestos (5%):</p>
+              <p className="text-gray-600">Impuestos, distribución y margenes comerciales:</p>
               <p className="font-medium">+${otrosImpuestosAmount.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg</p>
             </div>
             <div className="text-sm">

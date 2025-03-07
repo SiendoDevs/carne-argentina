@@ -37,7 +37,7 @@ const PriceCard: React.FC<PriceCardProps> = ({
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
           <TrendingUp className="h-5 w-5 mr-2 text-green-500" />
-          Precio {categoria}
+          Precio {categoria} (en pie)
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center pt-4">

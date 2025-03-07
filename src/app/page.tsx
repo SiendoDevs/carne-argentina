@@ -8,6 +8,9 @@ import DateCard from "@/components/DateCard";
 import SummaryCard from "@/components/SummaryCard";
 import PriceRanges from "@/components/PriceRanges";
 import Footer from "@/components/Footer";
+import SupportLocal from "@/components/SupportLocal";
+// @ts-ignore
+import Flag from 'react-world-flags';
 
 interface DataItem {
   categoria: string;
@@ -70,8 +73,13 @@ export default function Home() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Carne Argentina</h1>
-      <h2 className="mb-4 font-light text-center">Trazabilidad de precios, volumen y variaciónes del mercado de carne vacuna de Buenos Aires</h2>
+      <h1 className="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-3">
+        <span>Carne Argentina</span>
+        <Flag code="ar" className="max-h-3.5"/>
+      </h1>
+      <h2 className="mb-8 font-light text-center">
+        Trazabilidad de precios, volumen y variaciónes del mercado de carne vacuna de Buenos Aires
+      </h2>
       <CategoryTabs activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
       {loading && (
         <div className="text-center py-8">
@@ -96,6 +104,9 @@ export default function Home() {
              categoria={lastCategoryData.categoria}
              precio={lastCategoryData.precio}
            />
+         </div>
+         <div className="mt-8">
+           <SupportLocal />
          </div>
        </>
       ) : (
