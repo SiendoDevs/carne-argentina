@@ -1,5 +1,5 @@
 import React from 'react';
-import { packageJson } from '../lib/version';
+import { version } from '../lib/version';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -18,7 +18,7 @@ const Footer = () => {
         </a>
       </p>
       <p className="mt-1">
-        © {currentYear} • v{packageJson.version}
+        © {currentYear} • v{version}
       </p>
     </footer>
   );
