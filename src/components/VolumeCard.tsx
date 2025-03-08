@@ -64,7 +64,7 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
               esVariacionPositiva
                 ? "text-green-600"
                 : esVariacionNegativa
-                ? "text-red-600"
+                ? "text-rose-500"
                 : "text-gray-600"
             }`}
           >

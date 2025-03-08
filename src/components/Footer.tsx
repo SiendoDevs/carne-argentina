@@ -1,7 +1,8 @@
 import React from 'react';
 import { version } from '../lib/version';
+import { memo } from 'react';
 
-const Footer = () => {
+const Footer = memo(() => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -22,6 +23,8 @@ const Footer = () => {
       </p>
     </footer>
   );
-};
+});
+
+Footer.displayName = 'Footer';
 
 export default Footer;

@@ -2,26 +2,35 @@ import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const categoria = searchParams.get("categoria");
-
-  // Map category names to their respective class IDs
-  const categoryMap: Record<string, string> = {
-    Novillos: "1",
-    Novillitos: "2",
-    Vaquillonas: "3",
-    Vacas: "5",
-    Toros: "6",  // Added Toros with class ID 6
-  };
-  
-  // Either use the classId variable or remove it
-  // Option 1: Remove it if not needed
-  // const classId = categoryMap[categoria || "Novillos"] || "1";
-  
-  // Option 2: Use it in the clase variable below
-  const classId = categoryMap[categoria || "Novillos"] || "1";
-  
   try {
+    const mainResponse = await fetch("https://www.mercadoagroganadero.com.ar/dll/inicio.dll");
+    const mainHtml = await mainResponse.text();
+    const main$ = cheerio.load(mainHtml);
+    
+    // Get weekly volume with the correct selector
+    const weeklyVolume = main$('.col.text-center .home-data').text().trim();
+    const parsedWeeklyVolume = weeklyVolume ? 
+      Math.floor(parseInt(weeklyVolume.replace(/\./g, '')) / 10) : 
+      9880;
+    const { searchParams } = new URL(request.url);
+    const categoria = searchParams.get("categoria");
+  
+    // Map category names to their respective class IDs
+    const categoryMap: Record<string, string> = {
+      Novillos: "1",
+      Novillitos: "2",
+      Vaquillonas: "3",
+      Vacas: "5",
+      Toros: "6",  // Added Toros with class ID 6
+    };
+    
+    // Either use the classId variable or remove it
+    // Option 1: Remove it if not needed
+    // const classId = categoryMap[categoria || "Novillos"] || "1";
+    
+    // Option 2: Use it in the clase variable below
+    const classId = categoryMap[categoria || "Novillos"] || "1";
+    
     // Get ticker data first
     const tickerResponse = await fetch("https://www.mercadoagroganadero.com.ar/dll/inicio.dll", {
       headers: {
@@ -153,18 +162,16 @@ export async function GET(request: Request) {
       precio: ultimoPrecio,
       precioMax: tickerInfo?.max || null,
       precioMin: tickerInfo?.min || null,
+      penultimoPrecio,
+      variacionPorcentual,
       cabezas: ultimasCabezas,
       fecha: ultimaFecha,
-      penultimoPrecio: penultimoPrecio,
-      penultimasCabezas: penultimasCabezas,
-      penultimaFecha: penultimaFecha,
-      variacionPorcentual: variacionPorcentual,
-      historico: datosHistoricos,
-      periodoConsulta: {
-        inicio: fechaInicioStr,
-        fin: fechaFinStr
-      }
+      penultimaFecha,
+      penultimasCabezas,
+      datosHistoricos,
+      weeklyVolume: parsedWeeklyVolume
     });
+
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

@@ -3,13 +3,14 @@
 import React from "react";
 import { Calendar } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { memo } from 'react';
 
 interface DateCardProps {
   fecha: string;
   categoria: string;
 }
 
-const DateCard: React.FC<DateCardProps> = ({ fecha, categoria }) => {
+const DateCard = memo(({ fecha, categoria }: DateCardProps) => {
   const formatearFecha = (fechaStr: string) => {
     if (typeof fechaStr === "string" && fechaStr.includes("/")) {
       return fechaStr;
@@ -28,7 +29,7 @@ const DateCard: React.FC<DateCardProps> = ({ fecha, categoria }) => {
       </CardHeader>
       <CardContent className="text-center pt-4">
         <p className="text-sm text-gray-500 mb-2">Fecha</p>
-        <div className="text-4xl font-bold mb-2 text-amber-600">
+        <div className="text-4xl font-medium mb-2">
           {formatearFecha(fecha)}
         </div>
         <p className="text-xs text-gray-400">
@@ -37,6 +38,8 @@ const DateCard: React.FC<DateCardProps> = ({ fecha, categoria }) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+DateCard.displayName = 'DateCard';
 
 export default DateCard;

@@ -9,9 +9,9 @@ import SummaryCard from "@/components/SummaryCard";
 import PriceRanges from "@/components/PriceRanges";
 import Footer from "@/components/Footer";
 import SupportLocal from "@/components/SupportLocal";
-import Hero from "@/components/Hero";
-import { ThemeToggle } from "@/components/theme-toggle";
+import  Hero  from "@/components/Hero";
 import AlertModal from "@/components/AlertModal";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 interface DataItem {
   categoria: string;
@@ -91,7 +91,7 @@ export default function Home() {
         const newData = [{
           categoria,
           precio: result.precio,
-          precioMax: result.precioMax,
+          precioMax: result.precioMax || result.precio * 1.1,
           precioMin: result.precioMin,
           penultimoPrecio: result.penultimoPrecio,
           variacionPorcentual: result.variacionPorcentual,
@@ -134,40 +134,34 @@ export default function Home() {
         isOpen={isAlertOpen} 
         onClose={() => setIsAlertOpen(false)} 
       />
-      <div className="fixed top-4 right-4 z-10">
-        <ThemeToggle />
-      </div>
+
       <Hero />
       <div className="container mx-auto px-4 pb-8">
         <CategoryTabs
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
         />
-      {loading && (
-        <div className="text-center py-8">
-          <p className="text-gray-500">Cargando datos...</p>
-        </div>
-      )}
-      {error && (
-        <div className="text-center py-8">
-          <p className="text-red-500">Error: {error}</p>
-        </div>
-      )}
-      {!loading && !error && lastCategoryData ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <PriceCard {...lastCategoryData} />
-            <VolumeCard {...lastCategoryData} />
-            <DateCard
-              fecha={lastCategoryData.fecha}
-              categoria={lastCategoryData.categoria}
-            />
-            <SummaryCard
-              categoria={lastCategoryData.categoria}
-              precioMax={lastCategoryData.precioMax}
-              precioMin={lastCategoryData.precioMin}
-            />
+        {loading ? (
+          <LoadingSkeleton />
+        ) : error ? (
+          <div className="text-center py-8">
+            <p className="text-red-500">Error: {error}</p>
           </div>
+        ) : lastCategoryData ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <PriceCard {...lastCategoryData} />
+              <VolumeCard {...lastCategoryData} />
+              <DateCard
+                fecha={lastCategoryData.fecha}
+                categoria={lastCategoryData.categoria}
+              />
+              <SummaryCard
+                categoria={lastCategoryData.categoria}
+                precioMax={lastCategoryData.precioMax}
+                precioMin={lastCategoryData.precioMin}
+              />
+            </div>
           <div className="mt-6">
             <PriceRanges
               categoria={lastCategoryData.categoria}

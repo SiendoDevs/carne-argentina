@@ -32,13 +32,13 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">Precio Máximo:</span>
             <span className="font-medium text-green-600">
-              {precioMax ? `$${precioMax.toLocaleString("es-AR")}` : 'No disponible'}
+              {precioMax ? `$${precioMax.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'No disponible'}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Precio Mínimo:</span>
-            <span className="font-medium text-red-600">
-              {precioMin ? `$${precioMin.toLocaleString("es-AR")}` : 'No disponible'}
+            <span className="font-medium text-rose-500">
+              {precioMin ? `$${precioMin.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'No disponible'}
             </span>
           </div>
         </div>

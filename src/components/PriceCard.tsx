@@ -60,12 +60,12 @@ const PriceCard: React.FC<PriceCardProps> = ({
       <CardContent className="text-center pt-4">
         <p className="text-sm text-gray-500 mb-2">Precio Promedio</p>
         <div className="text-4xl font-bold mb-2 text-green-600">
-          ${precio.toLocaleString("es-AR")}
+          ${precio.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </div>
         
         {hayVariacion && (
           <div className={`flex items-center justify-center mb-2 ${
-            esVariacionPositiva ? 'text-green-600' : esVariacionNegativa ? 'text-red-600' : 'text-gray-600'
+            esVariacionPositiva ? 'text-green-600' : esVariacionNegativa ? 'text-rose-500' : 'text-gray-600'
           }`}>
             {esVariacionPositiva ? (
               <TrendingUp className="h-4 w-4 mr-1" />
@@ -80,7 +80,7 @@ const PriceCard: React.FC<PriceCardProps> = ({
         
         {penultimoPrecio !== null && (
           <p className="text-xs text-gray-500 mb-2">
-            Precio anterior: ${penultimoPrecio.toLocaleString("es-AR")}
+            Precio anterior: ${penultimoPrecio.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             {penultimaFecha && ` (${formatearFecha(penultimaFecha)})`}
           </p>
         )}

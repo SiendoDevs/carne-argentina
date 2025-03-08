@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Precios de la Carne Argentina',
+  title: 'Precios Carne Argentina | Media Res y Cortes',
   description: 'Mercado Agroganadero de Buenos Aires',
 };
 

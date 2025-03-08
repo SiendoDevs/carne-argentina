@@ -1,8 +1,9 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Store } from "lucide-react";
+import { memo } from 'react';
 
-const SupportLocal = () => {
+const SupportLocal = memo(() => {
   return (
     <Card className="bg-green-50 dark:bg-green-950 p-4 text-center mb-8">
       <div className="flex flex-col items-center justify-center gap-1 text-green-700 dark:text-green-400">
@@ -18,6 +19,8 @@ const SupportLocal = () => {
       </div>
     </Card>
   );
-};
+});
+
+SupportLocal.displayName = 'SupportLocal';
 
 export default SupportLocal;
