@@ -3,15 +3,15 @@ import { Users, TrendingUp, TrendingDown } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface VolumeCardProps {
-  categoria: string;
+  categoria: string; // We'll keep this in the interface but not use it in the component
   cabezas: number;
-  penultimasCabezas: number | null;  // Remove optional marker (?)
+  penultimasCabezas: number | null;
   fecha: string;
   penultimaFecha: string | null;
 }
 
 const VolumeCard: React.FC<VolumeCardProps> = ({
-  categoria,
+  // Remove categoria from destructuring since it's not used
   cabezas,
   penultimasCabezas,
   fecha,

@@ -9,12 +9,18 @@ export async function GET(request: Request) {
   const categoryMap: Record<string, string> = {
     Novillos: "1",
     Novillitos: "2",
-    Vacas: "3",
-    Vaquillonas: "4",
+    Vaquillonas: "3",
+    Vacas: "5",
     Toros: "6",  // Added Toros with class ID 6
   };
-
+  
+  // Either use the classId variable or remove it
+  // Option 1: Remove it if not needed
+  // const classId = categoryMap[categoria || "Novillos"] || "1";
+  
+  // Option 2: Use it in the clase variable below
   const classId = categoryMap[categoria || "Novillos"] || "1";
+  
   try {
     // Get ticker data first
     const tickerResponse = await fetch("https://www.mercadoagroganadero.com.ar/dll/inicio.dll", {
@@ -91,23 +97,19 @@ export async function GET(request: Request) {
     const fechaInicioStr = formatearFecha(fechaInicio);
     const fechaFinStr = formatearFecha(fechaFin);
 
-    // Aquí, puedes modificar esta parte para aceptar el parámetro dinámico
+    // Either use claseMap or remove it
+    // Option 1: Remove it if not needed
+    /*
     const claseMap: { [key: string]: string } = {
-      "Novillos": "1", // Novillos -> CLASE=1
-      "Novillitos": "2", // Novillitos -> CLASE=2
-      "Vaquillonas": "3", // Vaquillonas -> CLASE=3
-      "Vacas": "5", // Vacas -> CLASE=5
+      "Novillos": "1", 
+      "Novillitos": "2", 
+      "Vaquillonas": "3", 
+      "Vacas": "5", 
     };
-
-    // Obtener el parámetro 'categoria' desde la URL
-    const url = new URL(request.url);
-    const categoria = url.searchParams.get("categoria") || "Novillos"; // Por defecto 'Novillos'
-    const clase = claseMap[categoria] || "1"; // CLASE=1 por defecto
-
-    const apiUrl = `https://www.mercadoagroganadero.com.ar/php/hacigraf000110.chartjs.php?txtFECHAINI=${fechaInicioStr}&txtFECHAFIN=${fechaFinStr}&txtCLASE=${clase}`;
-
+    */
+    // Use classId directly instead of creating a new clase variable
+    const apiUrl = `https://www.mercadoagroganadero.com.ar/php/hacigraf000110.chartjs.php?txtFECHAINI=${fechaInicioStr}&txtFECHAFIN=${fechaFinStr}&txtCLASE=${classId}`;
     console.log(`Consultando datos para ${categoria} desde ${fechaInicioStr} hasta ${fechaFinStr}`);
-
     const response = await fetch(apiUrl, {
       headers: {
         "User-Agent":
@@ -115,45 +117,37 @@ export async function GET(request: Request) {
       },
       cache: "no-store",
     });
-
     if (!response.ok) {
       throw new Error(`Error HTTP: ${response.status}`);
     }
-
     const data = await response.json();
     const precios = data.data.find((d: { label: string; }) => d.label === "Precio Promedio")?.vals || [];
     const cabezas = data.data.find((d: { label: string; }) => d.label === "Cabezas")?.vals || [];
     const fechas = data.labels || [];
-
     if (precios.length === 0 || cabezas.length === 0 || fechas.length === 0) {
       throw new Error("No se encontraron precios, cabezas o fechas");
     }
-
     // Obtener el último registro disponible
     const ultimoPrecio = precios[precios.length - 1];
     const ultimasCabezas = cabezas[cabezas.length - 1];
     const ultimaFecha = fechas[fechas.length - 1];
-
     // Obtener el penúltimo registro disponible (si existe)
     const penultimoPrecio = precios.length > 1 ? precios[precios.length - 2] : null;
     const penultimasCabezas = cabezas.length > 1 ? cabezas[cabezas.length - 2] : null;
     const penultimaFecha = fechas.length > 1 ? fechas[fechas.length - 2] : null;
-
     // Calcular la variación porcentual si hay penúltimo precio
     let variacionPorcentual = null;
     if (penultimoPrecio !== null && ultimoPrecio !== null) {
       variacionPorcentual = ((ultimoPrecio - penultimoPrecio) / penultimoPrecio) * 100;
     }
-
     // Agregar datos históricos para posible uso en gráficos
     const datosHistoricos = fechas.map((fecha: string, index: number) => ({  // Changed from 'any' to specific types
       fecha: fecha,
       precio: precios[index] || null,
       cabezas: cabezas[index] || null,
     }));
-
     // Add ticker data to the response if available
-    const tickerInfo = tickerData[categoria] || tickerData[categoria.toUpperCase()];
+    const tickerInfo = categoria ? (tickerData[categoria] || tickerData[categoria.toUpperCase()]) : null;
     
     return NextResponse.json({
       precio: ultimoPrecio,

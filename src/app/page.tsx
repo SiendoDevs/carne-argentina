@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CategoryTabs from "@/components/CategoryTabs";
 import PriceCard from "@/components/PriceCard";
 import VolumeCard from "@/components/VolumeCard";
@@ -70,14 +70,15 @@ export default function Home() {
     }
   };
 
-  const fetchData = async (categoria: string) => {
+  // Fix the fetchData function to prevent infinite loops
+  const fetchData = useCallback(async (categoria: string) => {
     // Try to get cached data first
     const cachedData = getCachedData(categoria);
     if (cachedData) {
       setData(cachedData);
       return;
     }
-
+    
     setLoading(true);
     setError(null);
     try {
@@ -115,11 +116,13 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array to prevent recreation on each render
 
   useEffect(() => {
     fetchData(activeCategory);
-  }, [activeCategory]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCategory]); // Only depend on activeCategory, not fetchData
 
   const lastCategoryData = Array.isArray(data)
     ? data.filter((item) => item.categoria === activeCategory).pop()

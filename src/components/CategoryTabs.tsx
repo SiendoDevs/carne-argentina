@@ -19,34 +19,34 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
   const categories: CategoryInfo[] = [
     {
       id: "Novillos",
-      label: "Novillos",
+      label: "NO | Novillos",
       description: "Machos castrados de 431 a 520 kg",
     },
     {
       id: "Novillitos",
-      label: "Novillitos",
+      label: "NT | Novillitos",
       description: "Machos castrados de 351 a 390 kg",
     },
     {
-      id: "Vacas",
-      label: "Vacas",
-      description: "Hembras adultas de más de 430 kg",
-    },
-    {
       id: "Vaquillonas",
-      label: "Vaquillonas",
+      label: "VQ |Vaquillonas",
       description: "Hembras jóvenes de 351 a 390 kg",
     },
     {
+      id: "Vacas",
+      label: "VA | Vacas",
+      description: "Hembras adultas de más de 430 kg",
+    },
+    {
       id: "Toros",
-      label: "Toros",
+      label: "TO |Toros",
       description: "Machos enteros adultos de más de 520 kg",
     },
   ];
 
   return (
     <TooltipProvider>
-      <div className="mb-6 w-full overflow-x-auto">
+      <div className="mb-12 w-full overflow-x-auto">
         <div className="flex flex-nowrap md:flex-wrap gap-2 md:gap-4 justify-start md:justify-center min-w-full px-4 md:px-0">
           {categories.map((category) => (
             <Tooltip key={category.id}>
