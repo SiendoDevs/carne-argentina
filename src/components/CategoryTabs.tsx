@@ -39,7 +39,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
     },
     {
       id: "Toros",
-      label: "TO |Toros",
+      label: "TO | Toros",
       description: "Machos enteros adultos de más de 520 kg",
     },
   ];
