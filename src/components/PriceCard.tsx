@@ -11,14 +11,31 @@ interface PriceCardProps {
   penultimaFecha: string | null;
 }
 
-const PriceCard: React.FC<PriceCardProps> = ({ 
-  categoria, 
-  precio, 
-  penultimoPrecio, 
-  variacionPorcentual, 
+const PriceCard: React.FC<PriceCardProps> = ({
+  categoria,
+  precio,
+  penultimoPrecio,
+  variacionPorcentual,
   fecha,
-  penultimaFecha
+  penultimaFecha,  // Add this parameter
 }) => {
+  // Get category-specific styling
+  const getCategoryColor = (cat: string) => {
+    switch (cat) {
+      case "Novillos":
+        return "bg-blue-500";
+      case "Novillitos":
+        return "bg-green-500";
+      case "Vacas":
+        return "bg-purple-500";
+      case "Vaquillonas":
+        return "bg-pink-500";
+      case "Toros":
+        return "bg-amber-500";  // Added color for Toros
+      default:
+        return "bg-gray-500";
+    }
+  };
   const formatearFecha = (fechaStr: string) => {
     if (typeof fechaStr === "string" && fechaStr.includes("/")) {
       return fechaStr;

@@ -9,7 +9,9 @@ import SummaryCard from "@/components/SummaryCard";
 import PriceRanges from "@/components/PriceRanges";
 import Footer from "@/components/Footer";
 import SupportLocal from "@/components/SupportLocal";
-import Flag from "react-world-flags";
+import Hero from "@/components/Hero";
+import { ThemeToggle } from "@/components/theme-toggle";
+import AlertModal from "@/components/AlertModal";
 
 interface DataItem {
   categoria: string;
@@ -24,13 +26,58 @@ interface DataItem {
   penultimasCabezas: number | null;
 }
 
+// Add cache interface
+interface CacheData {
+  data: DataItem[];
+  timestamp: number;
+}
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<DataItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("Novillos");
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const CACHE_DURATION = 1000 * 60 * 30; // 30 minutes cache
+
+  const getCachedData = (categoria: string) => {
+    try {
+      const cached = localStorage.getItem(`livestock_data_${categoria}`);
+      if (cached) {
+        const parsedCache: CacheData = JSON.parse(cached);
+        const isExpired = Date.now() - parsedCache.timestamp > CACHE_DURATION;
+        
+        if (!isExpired) {
+          return parsedCache.data;
+        }
+      }
+    } catch (error) {
+      console.error('Cache reading error:', error);
+    }
+    return null;
+  };
+
+  const setCachedData = (categoria: string, data: DataItem[]) => {
+    try {
+      const cacheData: CacheData = {
+        data,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(`livestock_data_${categoria}`, JSON.stringify(cacheData));
+    } catch (error) {
+      console.error('Cache writing error:', error);
+    }
+  };
 
   const fetchData = async (categoria: string) => {
+    // Try to get cached data first
+    const cachedData = getCachedData(categoria);
+    if (cachedData) {
+      setData(cachedData);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -40,30 +87,31 @@ export default function Home() {
       }
       const result = await response.json();
       if (result.precio !== undefined) {
-        setData([
-          {
-            categoria,
-            precio: result.precio,
-            precioMax: result.precioMax,  // Add this
-            precioMin: result.precioMin,  // Add this
-            penultimoPrecio: result.penultimoPrecio,
-            variacionPorcentual: result.variacionPorcentual,
-            cabezas: result.cabezas,
-            fecha: result.fecha,
-            penultimaFecha: result.penultimaFecha,
-            penultimasCabezas: result.penultimasCabezas,
-          },
-        ]);
+        const newData = [{
+          categoria,
+          precio: result.precio,
+          precioMax: result.precioMax,
+          precioMin: result.precioMin,
+          penultimoPrecio: result.penultimoPrecio,
+          variacionPorcentual: result.variacionPorcentual,
+          cabezas: result.cabezas,
+          fecha: result.fecha,
+          penultimaFecha: result.penultimaFecha,
+          penultimasCabezas: result.penultimasCabezas,
+        }];
+        setData(newData);
+        setCachedData(categoria, newData);
       } else {
         setData(result);
+        setCachedData(categoria, result);
       }
     } catch (err: unknown) {
-      // Changed from 'any' to 'unknown'
       if (err instanceof Error) {
         setError(err.message);
       } else {
         setError("An unknown error occurred");
       }
+      setIsAlertOpen(true);
     } finally {
       setLoading(false);
     }
@@ -78,19 +126,20 @@ export default function Home() {
     : null;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-3">
-        <span>Carne Argentina</span>
-        <Flag code="ar" className="max-h-3.5" />
-      </h1>
-      <h2 className="mb-8 font-light text-center">
-        Trazabilidad de precios, volumen y variaciónes del mercado de carne
-        vacuna de Buenos Aires
-      </h2>
-      <CategoryTabs
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
+    <>
+      <AlertModal 
+        isOpen={isAlertOpen} 
+        onClose={() => setIsAlertOpen(false)} 
       />
+      <div className="fixed top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
+      <Hero />
+      <div className="container mx-auto px-4 pb-8">
+        <CategoryTabs
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+        />
       {loading && (
         <div className="text-center py-8">
           <p className="text-gray-500">Cargando datos...</p>
@@ -136,6 +185,7 @@ export default function Home() {
         )
       )}
       <Footer />
-    </div>
+      </div>
+    </>
   );
 }

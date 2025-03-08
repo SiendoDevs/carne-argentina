@@ -2,6 +2,19 @@ import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 
 export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const categoria = searchParams.get("categoria");
+
+  // Map category names to their respective class IDs
+  const categoryMap: Record<string, string> = {
+    Novillos: "1",
+    Novillitos: "2",
+    Vacas: "3",
+    Vaquillonas: "4",
+    Toros: "6",  // Added Toros with class ID 6
+  };
+
+  const classId = categoryMap[categoria || "Novillos"] || "1";
   try {
     // Get ticker data first
     const tickerResponse = await fetch("https://www.mercadoagroganadero.com.ar/dll/inicio.dll", {
@@ -158,7 +171,6 @@ export async function GET(request: Request) {
         fin: fechaFinStr
       }
     });
-
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

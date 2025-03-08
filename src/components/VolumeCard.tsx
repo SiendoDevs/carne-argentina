@@ -49,7 +49,7 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
           <Users className="h-5 w-5 mr-2 text-purple-500" />
-          {categoria} - Volumen Operado
+          Volumen Operado
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center pt-4">

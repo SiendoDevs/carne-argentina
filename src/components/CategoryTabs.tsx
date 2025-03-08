@@ -20,22 +20,27 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
     {
       id: "Novillos",
       label: "Novillos",
-      description: "Bovinos machos castrados",
+      description: "Machos castrados de 431 a 520 kg",
     },
     {
       id: "Novillitos",
       label: "Novillitos",
-      description: "Bovinos machos jóvenes castrados",
-    },
-    {
-      id: "Vaquillonas",
-      label: "Vaquillonas",
-      description: "Bovinos hembras jóvenes",
+      description: "Machos castrados de 351 a 390 kg",
     },
     {
       id: "Vacas",
       label: "Vacas",
-      description: "Bovinos hembras adultas",
+      description: "Hembras adultas de más de 430 kg",
+    },
+    {
+      id: "Vaquillonas",
+      label: "Vaquillonas",
+      description: "Hembras jóvenes de 351 a 390 kg",
+    },
+    {
+      id: "Toros",
+      label: "Toros",
+      description: "Machos enteros adultos de más de 520 kg",
     },
   ];
 
@@ -50,10 +55,10 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
                   onClick={() => setActiveCategory(category.id)}
                   className={`
                     whitespace-nowrap flex items-center px-3 gap-2 py-2 rounded-lg transition-all duration-200
-                    hover:bg-blue-50 relative
+                    hover:bg-blue-50 dark:hover:bg-blue-950 relative
                     ${activeCategory === category.id
-                      ? "bg-blue-100 text-blue-700 shadow-sm"
-                      : "text-gray-600 hover:text-blue-600"}
+                      ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 shadow-sm"
+                      : "text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"}
                   `}
                 >
                   <span>{category.label}</span>
