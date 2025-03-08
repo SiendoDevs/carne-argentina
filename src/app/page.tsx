@@ -9,17 +9,19 @@ import SummaryCard from "@/components/SummaryCard";
 import PriceRanges from "@/components/PriceRanges";
 import Footer from "@/components/Footer";
 import SupportLocal from "@/components/SupportLocal";
-import Flag from 'react-world-flags';
+import Flag from "react-world-flags";
 
 interface DataItem {
   categoria: string;
   precio: number;
+  precioMax: number | null;  // Add this
+  precioMin: number | null;  // Add this
   penultimoPrecio: number | null;
   variacionPorcentual: number | null;
   cabezas: number;
   fecha: string;
   penultimaFecha: string | null;
-  penultimasCabezas: number | null;  // Add this line
+  penultimasCabezas: number | null;
 }
 
 export default function Home() {
@@ -38,24 +40,29 @@ export default function Home() {
       }
       const result = await response.json();
       if (result.precio !== undefined) {
-        setData([{ 
-          categoria, 
-          precio: result.precio, 
-          penultimoPrecio: result.penultimoPrecio,
-          variacionPorcentual: result.variacionPorcentual,
-          cabezas: result.cabezas, 
-          fecha: result.fecha,
-          penultimaFecha: result.penultimaFecha,
-          penultimasCabezas: result.penultimasCabezas
-        }]);
+        setData([
+          {
+            categoria,
+            precio: result.precio,
+            precioMax: result.precioMax,  // Add this
+            precioMin: result.precioMin,  // Add this
+            penultimoPrecio: result.penultimoPrecio,
+            variacionPorcentual: result.variacionPorcentual,
+            cabezas: result.cabezas,
+            fecha: result.fecha,
+            penultimaFecha: result.penultimaFecha,
+            penultimasCabezas: result.penultimasCabezas,
+          },
+        ]);
       } else {
         setData(result);
       }
-    } catch (err: unknown) {  // Changed from 'any' to 'unknown'
+    } catch (err: unknown) {
+      // Changed from 'any' to 'unknown'
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unknown error occurred');
+        setError("An unknown error occurred");
       }
     } finally {
       setLoading(false);
@@ -74,12 +81,16 @@ export default function Home() {
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-3">
         <span>Carne Argentina</span>
-        <Flag code="ar" className="max-h-3.5"/>
+        <Flag code="ar" className="max-h-3.5" />
       </h1>
       <h2 className="mb-8 font-light text-center">
-        Trazabilidad de precios, volumen y variaciónes del mercado de carne vacuna de Buenos Aires
+        Trazabilidad de precios, volumen y variaciónes del mercado de carne
+        vacuna de Buenos Aires
       </h2>
-      <CategoryTabs activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
+      <CategoryTabs
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+      />
       {loading && (
         <div className="text-center py-8">
           <p className="text-gray-500">Cargando datos...</p>
@@ -91,26 +102,37 @@ export default function Home() {
         </div>
       )}
       {!loading && !error && lastCategoryData ? (
-         <>
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-           <PriceCard {...lastCategoryData} />
-           <VolumeCard {...lastCategoryData} />
-           <DateCard fecha={lastCategoryData.fecha} categoria={lastCategoryData.categoria} />
-           <SummaryCard {...lastCategoryData} />
-         </div>
-         <div className="mt-6">
-           <PriceRanges 
-             categoria={lastCategoryData.categoria}
-             precio={lastCategoryData.precio}
-           />
-         </div>
-         <div className="mt-8">
-           <SupportLocal />
-         </div>
-       </>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <PriceCard {...lastCategoryData} />
+            <VolumeCard {...lastCategoryData} />
+            <DateCard
+              fecha={lastCategoryData.fecha}
+              categoria={lastCategoryData.categoria}
+            />
+            <SummaryCard
+              categoria={lastCategoryData.categoria}
+              precioMax={lastCategoryData.precioMax}
+              precioMin={lastCategoryData.precioMin}
+            />
+          </div>
+          <div className="mt-6">
+            <PriceRanges
+              categoria={lastCategoryData.categoria}
+              precio={lastCategoryData.precio}
+              precioMax={lastCategoryData.precioMax}  // Add this
+            />
+          </div>
+          <div className="mt-8">
+            <SupportLocal />
+          </div>
+        </>
       ) : (
-        !loading && !error && (
-          <div className="text-center text-gray-500">No hay datos disponibles para esta categoría.</div>
+        !loading &&
+        !error && (
+          <div className="text-center text-gray-500">
+            No hay datos disponibles para esta categoría.
+          </div>
         )
       )}
       <Footer />

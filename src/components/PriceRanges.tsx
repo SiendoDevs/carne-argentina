@@ -6,24 +6,22 @@ import { Calculator } from "lucide-react";
 interface PriceRangesProps {
   categoria: string;
   precio: number;
+  precioMax: number | null;  // Add this
 }
 
-const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
+const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax }) => {
   const [isPrecioMaximo, setIsPrecioMaximo] = useState(false);
   
   // Constants for calculations
-  const RINDE_FAENA = 0.58;
+  const RINDE_FAENA = categoria === "Vacas" ? 0.54 : 0.58;
   const IVA_RATE = 0.105;
-  const OTROS_IMPUESTOS = 0.07
-  const INCREMENTO_MAXIMO = 0.065; 
-
-  // Base price calculation
-  const precioBase = isPrecioMaximo ? precio * (1 + INCREMENTO_MAXIMO) : precio;
+  const OTROS_IMPUESTOS = 0.15;
+  // Base price calculation - use precioMax when isPrecioMaximo is true
+  const precioBase = isPrecioMaximo && precioMax ? precioMax : precio;
   const ivaAmount = precioBase * IVA_RATE;
   const otrosImpuestosAmount = precioBase * OTROS_IMPUESTOS;
   const precioConImpuestos = precioBase + ivaAmount + otrosImpuestosAmount;
   const precioFinal = precioConImpuestos / RINDE_FAENA;
-
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-blue-500">
       <CardHeader className="pb-2">
@@ -49,7 +47,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
             variant={isPrecioMaximo ? "default" : "outline"}
             size="sm"
           >
-            Calidad Superior ($)
+            Calidad Superior (${precioMax?.toLocaleString('es-AR', { maximumFractionDigits: 2 }) ?? '-'})
           </Button>
         </div>
       </CardHeader>
@@ -67,7 +65,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
           </div>
           <div className="space-y-3">
             <div className="text-sm">
-              <p className="text-gray-600">Impuestos, distribución y margenes comerciales:</p>
+              <p className="text-gray-600">Otros impuestos, distribución y márgenes comerciales:</p>
               <p className="font-medium">+${otrosImpuestosAmount.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg</p>
             </div>
             <div className="text-sm">
@@ -85,7 +83,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio }) => {
                 <span className="text-lg font-normal text-blue-400">/kg</span>
               </p>
               <div className="inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full text-sm text-blue-700">
-                <span>Rendimiento al gancho: 58%</span>
+                <span>Rendimiento al gancho: {categoria === "Vacas" ? "54%" : "58%"}</span>
               </div>
             </div>
           </div>

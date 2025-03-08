@@ -1,7 +1,67 @@
 import { NextResponse } from "next/server";
+import * as cheerio from "cheerio";
 
 export async function GET(request: Request) {
   try {
+    // Get ticker data first
+    const tickerResponse = await fetch("https://www.mercadoagroganadero.com.ar/dll/inicio.dll", {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+      }
+    });
+    
+    const html = await tickerResponse.text();
+    const $ = cheerio.load(html);
+    
+    // Extract ticker data
+    const tickerData: { [key: string]: { max: number; min: number } } = {};
+    $('.ticker__list .ticker__item').each((_, element) => {
+      const text = $(element).text().trim();
+      
+      if (!text || text.match(/^\s+$/)) return; // Skip empty items
+      
+      // Match pattern like "Novillos $ 1.700,00 / $ 3.100,00"
+      const match = text.match(/^(\w+)\s+\$\s*([\d.,]+)\s*\/\s*\$\s*([\d.,]+)$/);
+      
+      if (match) {
+        const categoria = match[1].trim();
+        const precio1 = parseFloat(match[2].replace(/\./g, '').replace(',', '.'));
+        const precio2 = parseFloat(match[3].replace(/\./g, '').replace(',', '.'));
+        
+        // Store both uppercase and original version
+        tickerData[categoria] = {
+          max: Math.max(precio1, precio2),
+          min: Math.min(precio1, precio2)
+        };
+        tickerData[categoria.toUpperCase()] = {
+          max: Math.max(precio1, precio2),
+          min: Math.min(precio1, precio2)
+        };
+      }
+    });
+
+    // Remove the duplicate .marquee selector section as it's not needed
+
+    // Log the extracted data for debugging
+    console.log('Extracted ticker data:', tickerData);
+    $('.ticker__viewport .marquee').each((_, element) => {
+      const text = $(element).text().trim();
+      // Adjust regex to match the format shown in the image
+      const matches = text.matchAll(/(\w+)\s+\$\s*([\d.,]+)\s*\/\s*\$\s*([\d.,]+)/g);
+      
+      for (const match of matches) {
+        const categoria = match[1].trim();
+        const valores = [match[2], match[3]].map(v => 
+          parseFloat(v.replace(/\./g, '').replace(',', '.'))
+        ).sort((a, b) => b - a);
+        
+        tickerData[categoria] = {
+          max: valores[0],
+          min: valores[1]
+        };
+      }
+    });
+
     // Calcular fechas para los últimos 7 días
     const fechaFin = new Date();
     const fechaInicio = new Date();
@@ -79,8 +139,13 @@ export async function GET(request: Request) {
       cabezas: cabezas[index] || null,
     }));
 
+    // Add ticker data to the response if available
+    const tickerInfo = tickerData[categoria] || tickerData[categoria.toUpperCase()];
+    
     return NextResponse.json({
       precio: ultimoPrecio,
+      precioMax: tickerInfo?.max || null,
+      precioMin: tickerInfo?.min || null,
       cabezas: ultimasCabezas,
       fecha: ultimaFecha,
       penultimoPrecio: penultimoPrecio,
@@ -92,8 +157,9 @@ export async function GET(request: Request) {
         inicio: fechaInicioStr,
         fin: fechaFinStr
       }
-    });  // Change from 'any' to 'unknown'
-  } catch (error: unknown) {  // Change from 'any' to 'unknown'
+    });
+
+  } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
