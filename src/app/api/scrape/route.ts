@@ -106,16 +106,6 @@ export async function GET(request: Request) {
     const fechaInicioStr = formatearFecha(fechaInicio);
     const fechaFinStr = formatearFecha(fechaFin);
 
-    // Either use claseMap or remove it
-    // Option 1: Remove it if not needed
-    /*
-    const claseMap: { [key: string]: string } = {
-      "Novillos": "1", 
-      "Novillitos": "2", 
-      "Vaquillonas": "3", 
-      "Vacas": "5", 
-    };
-    */
     // Use classId directly instead of creating a new clase variable
     const apiUrl = `https://www.mercadoagroganadero.com.ar/php/hacigraf000110.chartjs.php?txtFECHAINI=${fechaInicioStr}&txtFECHAFIN=${fechaFinStr}&txtCLASE=${classId}`;
     console.log(`Consultando datos para ${categoria} desde ${fechaInicioStr} hasta ${fechaFinStr}`);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Flag from "react-world-flags";
 import Image from 'next/image';
 import { memo } from 'react';
-import { MainNav } from "@/components/MainNav";
+// import { MainNav } from "@/components/MainNav";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const Hero = memo(() => {
@@ -37,8 +37,7 @@ const Hero = memo(() => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       </div>
       <div className="container relative z-20 mx-auto px-4 py-8">
-        <div className="flex justify-between items-center">
-          <MainNav />
+        <div className="flex justify-end items-center">
           <div className="ml-4">
             <ThemeToggle />
           </div>

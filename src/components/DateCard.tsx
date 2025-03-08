@@ -20,20 +20,23 @@ const DateCard = memo(({ fecha, categoria }: DateCardProps) => {
   };
 
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-amber-500">
+    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-indigo-500">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
-          <Calendar className="h-5 w-5 mr-2 text-amber-500" />
+          <Calendar className="h-5 w-5 mr-2 text-indigo-500" />
           Última Operación
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center pt-4">
         <p className="text-sm text-gray-500 mb-2">Fecha</p>
-        <div className="text-4xl font-medium mb-2">
+        <div className="text-4xl font-medium mb-2 text-indigo-600">
           {formatearFecha(fecha)}
         </div>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-400 mb-3">
           Categoría: {categoria}
+        </p>
+        <p className="text-xs text-gray-400">
+          Actualización: {formatearFecha(fecha)}
         </p>
       </CardContent>
     </Card>

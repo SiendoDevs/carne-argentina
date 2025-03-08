@@ -16,9 +16,8 @@ const PriceCard: React.FC<PriceCardProps> = ({
   precio,
   penultimoPrecio,
   variacionPorcentual,
-  fecha,
   penultimaFecha,
-}) => {
+}) => {  // Remove 'fecha' from props destructuring since it's not used
   // Get category-specific styling
   const getCategoryColor = (cat: string) => {
     switch (cat) {
@@ -53,14 +52,15 @@ const PriceCard: React.FC<PriceCardProps> = ({
     <Card className={`shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 ${getCategoryColor(categoria)}`}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
-          <TrendingUp className="h-5 w-5 mr-2 text-green-500" />
+          <TrendingUp className="h-5 w-5 mr-2 text-emerald-500" />
           Precio {categoria} (en pie)
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center pt-4">
         <p className="text-sm text-gray-500 mb-2">Precio Promedio</p>
-        <div className="text-4xl font-bold mb-2 text-green-600">
+        <div className="text-4xl font-bold mb-2 text-emerald-600">
           ${precio.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          <span className="text-lg font-normal text-green-500">/kg</span>
         </div>
         
         {hayVariacion && (
@@ -80,14 +80,10 @@ const PriceCard: React.FC<PriceCardProps> = ({
         
         {penultimoPrecio !== null && (
           <p className="text-xs text-gray-500 mb-2">
-            Precio anterior: ${penultimoPrecio.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Precio anterior: ${penultimoPrecio.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/kg
             {penultimaFecha && ` (${formatearFecha(penultimaFecha)})`}
           </p>
         )}
-        
-        <p className="text-xs text-gray-400">
-          Actualizado: {formatearFecha(fecha)}
-        </p>
       </CardContent>
     </Card>
   );

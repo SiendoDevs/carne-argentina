@@ -14,7 +14,6 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
   // Remove categoria from destructuring since it's not used
   cabezas,
   penultimasCabezas,
-  fecha,
   penultimaFecha,
 }) => {
   const formatearFecha = (fechaStr: string) => {
@@ -45,16 +44,16 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
   const hayVariacion = variacionPorcentualCabezas !== null;
 
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-purple-500">
+    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-sky-500">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
-          <Users className="h-5 w-5 mr-2 text-purple-500" />
+          <Users className="h-5 w-5 mr-2 text-sky-500" />
           Volumen Operado
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center pt-4">
         <p className="text-sm text-gray-500 mb-2">Cabezas</p>
-        <div className="text-4xl font-bold mb-2 text-purple-600">
+        <div className="text-4xl font-bold mb-2 text-sky-600">
           {cabezas.toLocaleString("es-AR")}
         </div>
 
@@ -84,14 +83,10 @@ const VolumeCard: React.FC<VolumeCardProps> = ({
 
         {penultimasCabezas !== null && penultimasCabezas !== undefined && (
           <p className="text-xs text-gray-500 mb-2">
-            Anterior: {penultimasCabezas.toLocaleString("es-AR")}
+            Anterior: {penultimasCabezas.toLocaleString("es-AR")} cabezas
             {penultimaFecha && ` (${formatearFecha(penultimaFecha)})`}
           </p>
         )}
-
-        <p className="text-xs text-gray-400">
-          Actualizado: {formatearFecha(fecha)}
-        </p>
       </CardContent>
     </Card>
   );

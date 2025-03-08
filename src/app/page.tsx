@@ -91,7 +91,7 @@ export default function Home() {
         const newData = [{
           categoria,
           precio: result.precio,
-          precioMax: result.precioMax || result.precio * 1.1,
+          precioMax: result.precioMax || result.precio * 1.15,
           precioMin: result.precioMin,
           penultimoPrecio: result.penultimoPrecio,
           variacionPorcentual: result.variacionPorcentual,
@@ -149,6 +149,13 @@ export default function Home() {
           </div>
         ) : lastCategoryData ? (
           <>
+            <div className="mt-2 mb-8">
+              <PriceRanges
+                categoria={lastCategoryData.categoria}
+                precio={lastCategoryData.precio}
+                precioMax={lastCategoryData.precioMax}
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <PriceCard {...lastCategoryData} />
               <VolumeCard {...lastCategoryData} />
@@ -162,26 +169,19 @@ export default function Home() {
                 precioMin={lastCategoryData.precioMin}
               />
             </div>
-          <div className="mt-6">
-            <PriceRanges
-              categoria={lastCategoryData.categoria}
-              precio={lastCategoryData.precio}
-              precioMax={lastCategoryData.precioMax}  // Add this
-            />
-          </div>
-          <div className="mt-8">
-            <SupportLocal />
-          </div>
-        </>
-      ) : (
-        !loading &&
-        !error && (
-          <div className="text-center text-gray-500">
-            No hay datos disponibles para esta categoría.
-          </div>
-        )
-      )}
-      <Footer />
+            <div className="mt-8">
+              <SupportLocal />
+            </div>
+          </>
+        ) : (
+          !loading &&
+          !error && (
+            <div className="text-center text-gray-500">
+              No hay datos disponibles para esta categoría.
+            </div>
+          )
+        )}
+        <Footer />
       </div>
     </>
   );

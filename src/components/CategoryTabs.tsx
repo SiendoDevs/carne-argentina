@@ -29,7 +29,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
     },
     {
       id: "Vaquillonas",
-      label: "VQ |Vaquillonas",
+      label: "VQ | Vaquillonas",
       description: "Hembras jóvenes de 351 a 390 kg",
     },
     {

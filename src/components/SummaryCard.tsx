@@ -16,10 +16,10 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
   precioMin,
 }) => {
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-blue-500">
+    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-violet-500">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
-          <BarChart className="h-5 w-5 mr-2 text-blue-500" />
+          <BarChart className="h-5 w-5 mr-2 text-violet-500" />
           Rango de Precios
         </CardTitle>
       </CardHeader>
@@ -31,14 +31,14 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">Precio Máximo:</span>
-            <span className="font-medium text-green-600">
-              {precioMax ? `$${precioMax.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'No disponible'}
+            <span className="font-medium text-emerald-600">
+              {precioMax ? `$${precioMax.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/kg` : 'No disponible'}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Precio Mínimo:</span>
             <span className="font-medium text-rose-500">
-              {precioMin ? `$${precioMin.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'No disponible'}
+              {precioMin ? `$${precioMin.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/kg` : 'No disponible'}
             </span>
           </div>
         </div>

@@ -31,7 +31,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax 
             <Calculator className="h-5 w-5 mr-2 text-blue-500" />
             Estimación de Precio Final para Carnicerías
           </div>
-          <span className="text-sm text-gray-600 mt-1 font-light">
+          <span className="text-sm text-gray-400 mt-1 font-light">
             En base al {isPrecioMaximo ? 'máximo' : 'promedio'} en la categoria {categoria}
           </span>
         </CardTitle>
