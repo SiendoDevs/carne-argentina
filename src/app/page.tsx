@@ -136,7 +136,9 @@ export default function Home() {
       />
 
       <Hero />
-      <div className="container mx-auto px-4 pb-8">
+      <div className="container mx-auto px-4 pb-8 mt-6">
+      <h1 className="text-center mb-4 font-semibold text-lg md:text-xl">Categorías y Tipificación de Animales</h1>
+      <div className="w-full h-0.5 bg-blue-500/35 mx-auto mb-6 rounded-full" />
         <CategoryTabs
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
@@ -155,6 +157,10 @@ export default function Home() {
                 precio={lastCategoryData.precio}
                 precioMax={lastCategoryData.precioMax}
               />
+            </div>
+            <div>
+            <h1 className="text-center mb-4 font-semibold text-lg md:text-xl">Información Mercado de Hacienda<span className="font-light"> | Buenos Aires</span></h1>
+            <div className="w-full h-0.5 bg-blue-500/35 mx-auto mb-6 rounded-full" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <PriceCard {...lastCategoryData} />

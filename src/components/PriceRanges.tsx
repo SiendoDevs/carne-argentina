@@ -15,7 +15,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax 
   // Constants for calculations
   const RINDE_FAENA = categoria === "Vacas" ? 0.54 : 0.58;
   const IVA_RATE = 0.105;
-  const OTROS_IMPUESTOS = 0.15;
+  const OTROS_IMPUESTOS = 0.15; //
   // Base price calculation - use precioMax when isPrecioMaximo is true
   const precioBase = isPrecioMaximo && precioMax ? precioMax : precio;
   const ivaAmount = precioBase * IVA_RATE;
@@ -41,14 +41,14 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax 
             variant={!isPrecioMaximo ? "default" : "outline"}
             size="sm"
           >
-            Precio Promedio
+            Cal. Promedio
           </Button>
           <Button
             onClick={() => setIsPrecioMaximo(true)}
             variant={isPrecioMaximo ? "default" : "outline"}
             size="sm"
           >
-            Calidad Superior (${precioMax?.toLocaleString('es-AR', { maximumFractionDigits: 2 }) ?? '-'})
+            Cal. Superior (${precioMax?.toLocaleString('es-AR', { maximumFractionDigits: 2 }) ?? '-'})
           </Button>
         </div>
       </CardHeader>
@@ -78,17 +78,24 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax 
         <div className="mt-4 pt-4 border-t">
           <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-4 border border-blue-100 dark:border-blue-900">
             <div className="text-center">
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-1">Precio Final Estimado</p>
+              <h1 className="text-blue-600 dark:text-blue-400 font-semibold">
+                {categoria === "Novillitos" ? "NT" : 
+                 categoria === "Novillos" ? "NO" :
+                 categoria === "Vaquillonas" ? "VQ" :
+                 categoria === "Vacas" ? "VA" :
+                 categoria === "Toros" ? "TO" : ""} | {categoria}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-2 mb-1">Precio Final Estimado</p>
               <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
                 ${precioFinal.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
-                <span className="text-lg font-normal text-blue-400 dark:text-blue-500">/kg</span>
+                <span className="text-lg font-normal text-blue-600 dark:text-blue-400">/kg</span>
               </p>
-              <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-3 py-1 rounded-full text-sm text-blue-700 dark:text-blue-300">
+              <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-3 py-1 rounded-full text-xs text-blue-700 dark:text-blue-300">
                 <span>Rendimiento al gancho: {categoria === "Vacas" ? "54%" : "58%"}</span>
               </div>
             </div>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 text-center">
             *Todos los valores son estimativos y pueden variar según costos logísticos, distribución y márgenes comerciales.
           </p>
         </div>
