@@ -8,7 +8,7 @@ import DateCard from "@/components/DateCard";
 import SummaryCard from "@/components/SummaryCard";
 import PriceRanges from "@/components/PriceRanges";
 import Footer from "@/components/Footer";
-import SupportLocal from "@/components/SupportLocal";
+// import SupportLocal from "@/components/SupportLocal";
 import  Hero  from "@/components/Hero";
 import AlertModal from "@/components/AlertModal";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
@@ -175,9 +175,9 @@ export default function Home() {
                 precioMin={lastCategoryData.precioMin}
               />
             </div>
-            <div className="mt-8">
+            {/* <div className="mt-8">
               <SupportLocal />
-            </div>
+            </div> */}
           </>
         ) : (
           !loading &&

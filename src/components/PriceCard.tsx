@@ -60,7 +60,7 @@ const PriceCard: React.FC<PriceCardProps> = ({
         <p className="text-sm text-gray-500 mb-2">Precio Promedio</p>
         <div className="text-4xl font-bold mb-2 text-emerald-600">
           ${precio.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          <span className="text-lg font-normal text-green-500">/kg</span>
+          <span className="text-lg font-normal text-emerald-600">/kg</span>
         </div>
         
         {hayVariacion && (
