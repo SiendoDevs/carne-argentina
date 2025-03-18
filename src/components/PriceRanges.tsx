@@ -43,8 +43,8 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax 
               Estimación de Precio Final Mayorista
             </div>
             {isPrecioMaximo && (
-              <Badge variant="secondary" className="bg-blue-400 text-blue-100 px-4 py-1 text-xs flex items-center gap-1">
-                Calidad Superior
+              <Badge variant="secondary" className="bg-blue-500 text-white px-4 py-2 text-sm flex items-center gap-1">
+                Calidad Máxima
                 <Star className="h-3 w-3" />
               </Badge>
             )}
@@ -66,7 +66,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax 
             variant={isPrecioMaximo ? "default" : "outline"}
             size="sm"
           >
-            Cal. Superior (${precioMax?.toLocaleString('es-AR', { maximumFractionDigits: 2 }) ?? '-'})
+            Cal. Máxima (${precioMax?.toLocaleString('es-AR', { maximumFractionDigits: 2 }) ?? '-'})
           </Button>
         </div>
       </CardHeader>
