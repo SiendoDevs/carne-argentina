@@ -18,23 +18,6 @@ const PriceCard: React.FC<PriceCardProps> = ({
   variacionPorcentual,
   penultimaFecha,
 }) => {  // Remove 'fecha' from props destructuring since it's not used
-  // Get category-specific styling
-  const getCategoryColor = (cat: string) => {
-    switch (cat) {
-      case "Novillos":
-        return "border-t-blue-500";
-      case "Novillitos":
-        return "border-t-green-500";
-      case "Vacas":
-        return "border-t-purple-500";
-      case "Vaquillonas":
-        return "border-t-pink-500";
-      case "Toros":
-        return "border-t-amber-500";
-      default:
-        return "border-t-gray-500";
-    }
-  };
   const formatearFecha = (fechaStr: string) => {
     if (typeof fechaStr === "string" && fechaStr.includes("/")) {
       return fechaStr;
@@ -49,10 +32,10 @@ const PriceCard: React.FC<PriceCardProps> = ({
   const hayVariacion = variacionPorcentual !== null;
 
   return (
-    <Card className={`shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 ${getCategoryColor(categoria)}`}>
+    <Card className={`shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-blue-600 `}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
-          <TrendingUp className="h-5 w-5 mr-2 text-emerald-500" />
+          <TrendingUp className="h-5 w-5 mr-2 text-blue-600" />
           Precio {categoria} (en pie)
         </CardTitle>
       </CardHeader>

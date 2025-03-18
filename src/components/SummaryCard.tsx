@@ -16,10 +16,10 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
   precioMin,
 }) => {
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-violet-500">
+    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-blue-600">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
-          <BarChart className="h-5 w-5 mr-2 text-violet-500" />
+          <BarChart className="h-5 w-5 mr-2 text-blue-600" />
           Rango de Precios
         </CardTitle>
       </CardHeader>

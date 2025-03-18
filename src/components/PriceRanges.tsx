@@ -16,7 +16,7 @@ const PriceRanges: React.FC<PriceRangesProps> = ({ categoria, precio, precioMax 
   // Constants for calculations
   const RINDE_FAENA = categoria === "Vacas" ? 0.54 : 0.58;
   const IVA_RATE = 0.105;
-  const OTROS_IMPUESTOS = 0.15;
+  const OTROS_IMPUESTOS = 0.12;
 
   // Base price calculation - use precioMax when isPrecioMaximo is true
   const precioBase = isPrecioMaximo && precioMax ? precioMax : precio;

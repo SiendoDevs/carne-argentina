@@ -8,10 +8,10 @@ export async function GET(request: Request) {
     const main$ = cheerio.load(mainHtml);
     
     // Get weekly volume with the correct selector
-    const weeklyVolume = main$('.col.text-center .home-data').text().trim();
+    const weeklyVolume = main$('.home-data').eq(2).text().trim();
     const parsedWeeklyVolume = weeklyVolume ? 
-      Math.floor(parseInt(weeklyVolume.replace(/\./g, '')) / 10) : 
-      9880;
+      parseInt(weeklyVolume.replace(/\D/g, '')) : 
+      0;
     const { searchParams } = new URL(request.url);
     const categoria = searchParams.get("categoria");
   
