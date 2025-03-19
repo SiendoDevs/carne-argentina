@@ -15,54 +15,79 @@ export interface LivestockData {
 
 export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
   try {
-    console.log('New scraped data:', JSON.stringify(data, null, 2));
+    console.log('Attempting to store data:', JSON.stringify(data, null, 2));
     
-    // Get the most recent entry for this category from today
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-    const latestEntry = await prisma.livestockPrice.findFirst({
+    // Format the date correctly from "Mi 19/03/25" to "2025-03-19"
+    const dateMatch = data.fecha.match(/(\d{2})\/(\d{2})\/(\d{2})/);
+    if (!dateMatch) {
+      throw new Error(`Invalid date format: ${data.fecha}`);
+    }
+    const [, day, month, year] = dateMatch;
+    const formattedDate = `20${year}-${month}-${day}`;
+    
+    // Get today's entries for this category
+    const todayEntries = await prisma.livestockPrice.findMany({
       where: {
         categoria: data.categoria,
-        fecha: today
+        fecha: formattedDate
       },
       orderBy: {
         createdAt: 'desc'
       }
     });
 
-    // Log the comparison
-    if (latestEntry) {
-      console.log('Latest stored data:', JSON.stringify(latestEntry, null, 2));
-      console.log('Comparing prices:', {
-        storedPrice: latestEntry.precio,
-        newPrice: data.precio,
-        storedVolume: latestEntry.cabezas,
-        newVolume: data.cabezas
-      });
-    }
+    console.log(`Found ${todayEntries.length} entries for ${data.categoria} on ${formattedDate}`);
 
-    // If no entry exists for today or if the price/volume has changed, store the new data
-    if (!latestEntry || 
-        latestEntry.precio !== data.precio || 
-        latestEntry.cabezas !== data.cabezas ||
-        latestEntry.precioMax !== data.precioMax ||
-        latestEntry.precioMin !== data.precioMin) {
-      
+    // Always store the first entry of the day
+    if (todayEntries.length === 0) {
       const result = await prisma.livestockPrice.create({
         data: {
-          ...data,
+          categoria: data.categoria,
+          precio: data.precio,
+          precioMax: data.precioMax || undefined,
+          precioMin: data.precioMin || undefined,
+          cabezas: data.cabezas,
+          fecha: formattedDate,
+          variacionPorcentual: data.variacionPorcentual || undefined,
+          weeklyVolume: data.weeklyVolume || undefined,
           createdAt: new Date()
         }
       });
-
-      console.log(`Stored new data with ID: ${result.id} - Price changed or new entry for today`);
+      console.log(`First entry of the day stored with ID: ${result.id}`);
       return true;
     }
 
-    console.log(`No changes detected for ${data.categoria} today. Skipping storage.`);
+    // Compare with the latest entry
+    const latestEntry = todayEntries[0];
+    const hasChanges = 
+      latestEntry.precio !== data.precio ||
+      latestEntry.cabezas !== data.cabezas ||
+      latestEntry.precioMax !== data.precioMax ||
+      latestEntry.precioMin !== data.precioMin;
+
+    if (hasChanges) {
+      const result = await prisma.livestockPrice.create({
+        data: {
+          categoria: data.categoria,
+          precio: data.precio,
+          precioMax: data.precioMax || undefined,
+          precioMin: data.precioMin || undefined,
+          cabezas: data.cabezas,
+          fecha: formattedDate,
+          variacionPorcentual: data.variacionPorcentual || undefined,
+          weeklyVolume: data.weeklyVolume || undefined,
+          createdAt: new Date()
+        }
+      });
+      console.log(`New changes detected and stored with ID: ${result.id}`);
+      return true;
+    }
+
+    console.log(`No changes detected for ${data.categoria}. Latest entry:`, latestEntry);
     return false;
   } catch (error) {
     console.error('Error storing livestock data:', error);
-    return false;
+    throw error; // Throw the error to better track issues
   }
 }
 
