@@ -1,12 +1,16 @@
 import type { NextConfig } from "next";
 import { startCronJob } from "./src/lib/cron";
 
-// Start the cron job when the server starts - in both dev and production
-// This ensures we can test it in development mode
-setTimeout(() => {
-  console.log('Starting cron job...');
-  startCronJob();
-}, 3000); // Small delay to ensure server is fully initialized
+// Only start the cron job in production when server is running
+if (process.env.NODE_ENV === 'production') {
+  // Wait for server to be fully started
+  if (typeof window === 'undefined') {  // Only run on server-side
+    setTimeout(() => {
+      console.log('Starting cron job in production mode...');
+      startCronJob();
+    }, 5000);  // Wait 5 seconds after server start
+  }
+}
 
 const nextConfig: NextConfig = {
   /* config options here */

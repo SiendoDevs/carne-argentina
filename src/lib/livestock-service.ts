@@ -1,5 +1,6 @@
 import prisma from './prisma';
-import * as cheerio from 'cheerio';
+// Remove the unused cheerio import
+// import * as cheerio from 'cheerio';
 
 export interface LivestockData {
   categoria: string;
