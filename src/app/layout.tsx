@@ -1,5 +1,6 @@
 // Add this near the top of the file
 import { initializeServer } from '@/lib/server-init';
+import { Analytics } from "@vercel/analytics/react"
 
 // Call it before the app starts
 if (typeof window === 'undefined') {
@@ -29,6 +30,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <main>{children}</main>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
