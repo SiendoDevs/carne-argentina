@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Flag from "react-world-flags";
 import Image from 'next/image';
 import { memo } from 'react';
-// import { MainNav } from "@/components/MainNav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import WeekHeads from '@/components/WeekHeads';
+import { isMarketOperating, getNextMarketOpen } from '@/lib/market-utils';
 
 const Hero = memo(() => {
   const [weeklyVolume, setWeeklyVolume] = useState<number | null>(null);
+  const [isOperating, setIsOperating] = useState(false);
+  const [nextOpen, setNextOpen] = useState<Date | null>(null);
 
   useEffect(() => {
     const fetchWeeklyVolume = async () => {
@@ -21,6 +23,24 @@ const Hero = memo(() => {
     };
 
     fetchWeeklyVolume();
+  }, []);
+
+  useEffect(() => {
+    const checkMarketStatus = () => {
+      const operating = isMarketOperating();
+      setIsOperating(operating);
+      if (!operating) {
+        setNextOpen(getNextMarketOpen());
+      }
+    };
+
+    // Check immediately
+    checkMarketStatus();
+    
+    // Check every minute
+    const interval = setInterval(checkMarketStatus, 60000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -38,7 +58,14 @@ const Hero = memo(() => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       </div>
       <div className="container relative z-20 mx-auto px-4 py-4 sm:py-6 md:py-8">
-        <div className="flex justify-end items-center">
+        <div className="flex justify-between items-center">
+          {/* Market Status Indicator */}
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-white/10 backdrop-blur-sm">
+            <div className={`h-2 w-2 rounded-full ${isOperating ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+            <span className="text-white">
+              {isOperating ? 'Mercado Operando' : 'Mercado Cerrado'}
+            </span>
+          </div>
           <div className="ml-4">
             <ThemeToggle />
           </div>
@@ -54,6 +81,17 @@ const Hero = memo(() => {
             <h2 className="text-sm sm:text-md md:text-lg lg:text-lg font-light max-w-[280px] sm:max-w-sm lg:max-w-2xl">
               Sistema Informativo de Precios de la Carne Argentina
             </h2>
+            {/* Show next opening time when market is closed */}
+            {!isOperating && nextOpen && (
+              <p className="mt-2 text-sm text-white/80">
+                Próxima apertura: {nextOpen.toLocaleString('es-AR', { 
+                  timeZone: 'America/Argentina/Buenos_Aires',
+                  weekday: 'long',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+            )}
           </div>
           <div className="mt-2 sm:mt-0">
             <WeekHeads weeklyVolume={weeklyVolume} />
