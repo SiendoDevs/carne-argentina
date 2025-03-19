@@ -17,31 +17,43 @@ export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
   try {
     console.log('Attempting to store data:', JSON.stringify(data, null, 2));
     
-    // Check if we already have this data
-    const existing = await prisma.livestockPrice.findFirst({
-      where: {
-        categoria: data.categoria,
-        fecha: data.fecha,
-      },
-    });
+    // Check if the market should be operating (Monday to Friday, 8:00 to 20:00 Argentina time)
+    const now = new Date();
+    const argTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+    const isWeekday = argTime.getDay() > 0 && argTime.getDay() < 6;
+    const isOperatingHours = argTime.getHours() >= 8 && argTime.getHours() < 20;
 
-    // If data already exists, don't store it again
-    if (existing) {
-      console.log(`Data for ${data.categoria} on ${data.fecha} already exists`);
+    if (!isWeekday || !isOperatingHours) {
+      console.log('Market is closed. Skipping data storage.');
       return false;
     }
 
-    // Store new data
+    // Get the most recent entry for this category
+    const latestEntry = await prisma.livestockPrice.findFirst({
+      where: {
+        categoria: data.categoria,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    // If we have a previous entry, check if the price has actually changed
+    if (latestEntry) {
+      const priceChanged = latestEntry.precio !== data.precio;
+      const volumeChanged = latestEntry.cabezas !== data.cabezas;
+      
+      if (!priceChanged && !volumeChanged) {
+        console.log(`No changes detected for ${data.categoria}. Skipping storage.`);
+        return false;
+      }
+    }
+
+    // Store new data with timestamp
     const result = await prisma.livestockPrice.create({
       data: {
-        categoria: data.categoria,
-        precio: data.precio,
-        precioMax: data.precioMax || undefined,
-        precioMin: data.precioMin || undefined,
-        cabezas: data.cabezas,
-        fecha: data.fecha,
-        variacionPorcentual: data.variacionPorcentual || undefined,
-        weeklyVolume: data.weeklyVolume || undefined,
+        ...data,
+        createdAt: new Date(),
       },
     });
 

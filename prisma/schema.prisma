@@ -14,18 +14,16 @@ datasource db {
 }
 
 model LivestockPrice {
-  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
-  categoria          String
-  precio             Float
-  precioMax          Float?
-  precioMin          Float?
-  cabezas            Int
-  fecha              String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoria String
+  precio    Float
+  precioMax Float?
+  precioMin Float?
+  cabezas   Int
+  fecha     String
   variacionPorcentual Float?
-  weeklyVolume       Int?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  weeklyVolume Int?
+  createdAt DateTime @default(now())
 
-  @@unique([categoria, fecha])
-  @@map("livestock_prices")
+  @@index([categoria, fecha])
 }
