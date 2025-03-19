@@ -1,3 +1,11 @@
+// Add this near the top of the file
+import { initializeServer } from '@/lib/server-init';
+
+// Call it before the app starts
+if (typeof window === 'undefined') {
+  initializeServer();
+}
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
