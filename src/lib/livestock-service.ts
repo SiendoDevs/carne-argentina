@@ -15,50 +15,51 @@ export interface LivestockData {
 
 export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
   try {
-    console.log('Attempting to store data:', JSON.stringify(data, null, 2));
+    console.log('New scraped data:', JSON.stringify(data, null, 2));
     
-    // Check if the market should be operating (Monday to Friday, 8:00 to 20:00 Argentina time)
-    const now = new Date();
-    const argTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
-    const isWeekday = argTime.getDay() > 0 && argTime.getDay() < 6;
-    const isOperatingHours = argTime.getHours() >= 8 && argTime.getHours() < 20;
-
-    if (!isWeekday || !isOperatingHours) {
-      console.log('Market is closed. Skipping data storage.');
-      return false;
-    }
-
-    // Get the most recent entry for this category
+    // Get the most recent entry for this category from today
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
     const latestEntry = await prisma.livestockPrice.findFirst({
       where: {
         categoria: data.categoria,
+        fecha: today
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
-    // If we have a previous entry, check if the price has actually changed
+    // Log the comparison
     if (latestEntry) {
-      const priceChanged = latestEntry.precio !== data.precio;
-      const volumeChanged = latestEntry.cabezas !== data.cabezas;
-      
-      if (!priceChanged && !volumeChanged) {
-        console.log(`No changes detected for ${data.categoria}. Skipping storage.`);
-        return false;
-      }
+      console.log('Latest stored data:', JSON.stringify(latestEntry, null, 2));
+      console.log('Comparing prices:', {
+        storedPrice: latestEntry.precio,
+        newPrice: data.precio,
+        storedVolume: latestEntry.cabezas,
+        newVolume: data.cabezas
+      });
     }
 
-    // Store new data with timestamp
-    const result = await prisma.livestockPrice.create({
-      data: {
-        ...data,
-        createdAt: new Date(),
-      },
-    });
+    // If no entry exists for today or if the price/volume has changed, store the new data
+    if (!latestEntry || 
+        latestEntry.precio !== data.precio || 
+        latestEntry.cabezas !== data.cabezas ||
+        latestEntry.precioMax !== data.precioMax ||
+        latestEntry.precioMin !== data.precioMin) {
+      
+      const result = await prisma.livestockPrice.create({
+        data: {
+          ...data,
+          createdAt: new Date()
+        }
+      });
 
-    console.log(`Successfully stored new data with ID: ${result.id}`);
-    return true;
+      console.log(`Stored new data with ID: ${result.id} - Price changed or new entry for today`);
+      return true;
+    }
+
+    console.log(`No changes detected for ${data.categoria} today. Skipping storage.`);
+    return false;
   } catch (error) {
     console.error('Error storing livestock data:', error);
     return false;
