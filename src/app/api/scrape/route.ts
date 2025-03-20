@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
+import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
   try {
@@ -148,10 +149,34 @@ export async function GET(request: Request) {
     // Add ticker data to the response if available
     const tickerInfo = categoria ? (tickerData[categoria] || tickerData[categoria.toUpperCase()]) : null;
     
+    // Get max/min prices from database if ticker doesn't provide them
+    let finalPrecioMax = tickerInfo?.max || null;
+    let finalPrecioMin = tickerInfo?.min || null;
+    
+    if (!finalPrecioMax || !finalPrecioMin) {
+      const latestPrices = await prisma.livestockPrice.findFirst({
+        where: {
+          categoria: categoria || "Novillos",
+          precioMax: { not: null },
+          precioMin: { not: null }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        select: {
+          precioMax: true,
+          precioMin: true
+        }
+      });
+    
+      finalPrecioMax = finalPrecioMax || latestPrices?.precioMax || ultimoPrecio * 1.15;
+      finalPrecioMin = finalPrecioMin || latestPrices?.precioMin || ultimoPrecio * 0.85;
+    }
+
     return NextResponse.json({
       precio: ultimoPrecio,
-      precioMax: tickerInfo?.max || null,
-      precioMin: tickerInfo?.min || null,
+      precioMax: finalPrecioMax,
+      precioMin: finalPrecioMin,
       penultimoPrecio,
       variacionPorcentual,
       cabezas: ultimasCabezas,
