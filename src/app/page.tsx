@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import AlertModal from "@/components/AlertModal";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
+import PriceChart from "@/components/PriceChart";
 
 
 interface DataItem {
@@ -24,6 +25,10 @@ interface DataItem {
   fecha: string;
   penultimaFecha: string | null;
   penultimasCabezas: number | null;
+  datosHistoricos: Array<{
+    fecha: string;
+    precio: number | null;
+  }>;
 }
 
 // Add cache interface
@@ -99,6 +104,7 @@ export default function Home() {
           fecha: result.fecha,
           penultimaFecha: result.penultimaFecha,
           penultimasCabezas: result.penultimasCabezas,
+          datosHistoricos: result.datosHistoricos || [],
         }];
         setData(newData);
         setCachedData(categoria, newData);
@@ -173,6 +179,12 @@ export default function Home() {
                 categoria={lastCategoryData.categoria}
                 precioMax={lastCategoryData.precioMax}
                 precioMin={lastCategoryData.precioMin}
+              />
+            </div>
+            <div className="mt-6">
+              <PriceChart
+                categoria={lastCategoryData.categoria}
+                datosHistoricos={lastCategoryData.datosHistoricos}
               />
             </div>
             {/* <div className="mt-8">

@@ -1,6 +1,4 @@
 import prisma from './prisma';
-// Remove the unused cheerio import
-// import * as cheerio from 'cheerio';
 
 export interface LivestockData {
   categoria: string;
@@ -11,6 +9,10 @@ export interface LivestockData {
   fecha: string;
   variacionPorcentual: number | null;
   weeklyVolume: number | null;
+  datosHistoricos?: Array<{
+    fecha: string;
+    precio: number | null;
+  }>;
 }
 
 export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
@@ -40,6 +42,21 @@ export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
 
     // Always store the first entry of the day
     if (todayEntries.length === 0) {
+      // Obtener datos históricos
+      const historicalData = await prisma.livestockPrice.findMany({
+        where: {
+          categoria: data.categoria
+        },
+        orderBy: {
+          fecha: 'desc'
+        },
+        take: 30,
+        select: {
+          fecha: true,
+          precio: true
+        }
+      });
+
       const result = await prisma.livestockPrice.create({
         data: {
           categoria: data.categoria,
@@ -48,6 +65,7 @@ export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
           precioMin: data.precioMin || undefined,
           cabezas: data.cabezas,
           fecha: formattedDate,
+          datosHistoricos: historicalData,
           variacionPorcentual: data.variacionPorcentual || undefined,
           weeklyVolume: data.weeklyVolume || undefined,
           createdAt: new Date()
@@ -66,6 +84,21 @@ export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
       latestEntry.precioMin !== data.precioMin;
 
     if (hasChanges) {
+      // Obtener datos históricos
+      const historicalData = await prisma.livestockPrice.findMany({
+        where: {
+          categoria: data.categoria
+        },
+        orderBy: {
+          fecha: 'desc'
+        },
+        take: 30,
+        select: {
+          fecha: true,
+          precio: true
+        }
+      });
+
       const result = await prisma.livestockPrice.create({
         data: {
           categoria: data.categoria,
@@ -74,6 +107,7 @@ export async function storeDataIfNew(data: LivestockData): Promise<boolean> {
           precioMin: data.precioMin || undefined,
           cabezas: data.cabezas,
           fecha: formattedDate,
+          datosHistoricos: historicalData,
           variacionPorcentual: data.variacionPorcentual || undefined,
           weeklyVolume: data.weeklyVolume || undefined,
           createdAt: new Date()

@@ -23,6 +23,7 @@ model LivestockPrice {
   fecha     String
   variacionPorcentual Float?
   weeklyVolume Int?
+  datosHistoricos Json?
   createdAt DateTime @default(now())
 
   @@index([categoria, fecha])
